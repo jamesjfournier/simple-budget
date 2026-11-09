@@ -4,32 +4,40 @@
 
 **A simple, private, and intuitive desktop application designed to help you take control of your finances.**
 
-Simple Budget is a cross-platform personal finance application that makes it easier to manage your money, track debt, plan paychecks, and work toward your financial goals.
+Simple Budget is a cross-platform personal finance application that helps you manage your money, track debt, plan paychecks, and work toward your financial goals.
 
-Designed with simplicity and privacy in mind, the application brings your essential financial information into one easy-to-use dashboard. Whether you're paying down debt, building an emergency fund, or saving for a major purchase, Simple Budget helps you understand where your money is going and make informed financial decisions.
+Instead of complicated spreadsheets or subscription-based budgeting services, Simple Budget provides a straightforward way to organize your financial obligations and understand exactly where your money is going.
 
-The goal is simple: **take the guesswork out of budgeting and make every paycheck count.**
+Whether you're paying off credit cards, managing monthly expenses, building an emergency fund, or saving for a major purchase, Simple Budget helps you make informed financial decisions.
+
+**The goal is simple: Take the guesswork out of budgeting and make every paycheck count.**
 
 ![Version](https://img.shields.io/badge/Version-1.0-blue?style=flat-square)
 ![macOS](https://img.shields.io/badge/macOS-13%2B-000000?style=flat-square&logo=apple&logoColor=white)
 ![Windows](https://img.shields.io/badge/Windows-10%20%2F%2011-0078D6?style=flat-square&logo=windows&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-x64%20%2F%20ARM64-FCC624?style=flat-square&logo=linux&logoColor=black)
+![Linux](https://img.shields.io/badge/Linux-AMD64%20%2F%20ARM64-FCC624?style=flat-square&logo=linux&logoColor=black)
 ![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local-success?style=flat-square)
-![License](https://img.shields.io/badge/Version-1.0-blue?style=flat-square)
 
 ---
 
 ## 🖥️ Application Overview
 
-![Simple Budget Main Dashboard](assets/app-main-view.png)
+![Simple Budget Dashboard Overview](assets/dashboard-overview.png)
 
-Simple Budget provides a centralized dashboard for monitoring your financial position.
+Simple Budget brings your essential financial information into one easy-to-use dashboard.
 
-From a single interface, you can see how much money remains after your latest paycheck, track outstanding debts, monitor savings and investment goals, and keep an eye on your credit score.
+From a single interface, you can:
 
-The application begins with a guided setup that helps you enter your income, recurring expenses, outstanding debts, and financial goals.
+- View how much money remains after bills and expenses.
+- Monitor outstanding debt balances with visual progress charts.
+- Track recurring expenses and upcoming payments.
+- Follow progress toward savings and investment goals.
+- Monitor your manually entered credit score.
+- Review suggested paycheck allocations.
 
-Once configured, Simple Budget uses that information to help you plan how to distribute future paychecks.
+The application begins with a guided setup that helps you enter your income, debts, recurring expenses, and financial goals.
+
+Once configured, Simple Budget uses that information to help you plan how to distribute your paychecks.
 
 ---
 
@@ -37,138 +45,175 @@ Once configured, Simple Budget uses that information to help you plan how to dis
 
 ### 📊 Financial Dashboard
 
-Get a clear overview of your finances without navigating through complicated spreadsheets.
+Get a complete overview of your financial situation without complicated spreadsheets.
 
-- View funds remaining after your latest paycheck.
+- View remaining funds after paying bills and expenses.
 - Monitor outstanding debt balances.
-- Track progress toward savings goals.
-- Visualize investment contributions.
-- Monitor your manually entered credit score.
-- Review your overall financial position in one place.
+- Visualize debt repayment progress.
+- Track savings and investment goals.
+- Monitor your credit score.
+- Keep your essential financial information organized in one place.
 
 ### 💵 Intelligent Paycheck Planning
 
-Make every paycheck work toward your financial priorities.
+Take the guesswork out of payday.
 
 - Supports biweekly and monthly pay schedules.
-- Automatically suggests how to distribute each paycheck.
-- Prioritizes upcoming bills and minimum debt payments.
-- Maintains an everyday spending buffer.
-- Allocates remaining funds toward debt repayment, savings, and investments.
-- Allows manual adjustments before recording a paycheck.
+- Enter your actual paycheck amount when you get paid.
+- Record bills and expenses you've paid.
+- Receive suggested allocations based on your financial obligations.
+- Prioritize upcoming bills and minimum debt payments.
+- Maintain an everyday spending buffer.
+- Allocate remaining funds toward debt repayment, savings, and investments.
+- Adjust suggested amounts before recording your paycheck.
 
 ### 💳 Debt Management
 
-Stay organized and make progress toward becoming debt-free.
+Stay organized and work toward becoming debt-free.
 
-- Track multiple outstanding debts.
-- Monitor remaining balances.
+- Track multiple debts, including loans and credit cards.
+- Monitor outstanding balances.
 - Configure optional recurring minimum payments.
-- Visualize debt repayment progress.
+- Visualize repayment progress through dedicated charts.
 
 ### 📅 Expense Tracking
 
-Keep recurring financial obligations organized.
+Manage recurring financial obligations in one place.
 
-- Track bills and regular expenses.
-- Supports weekly, biweekly, and monthly payment schedules.
+- Add bills and recurring expenses.
+- Record payment amounts and due dates.
+- Supports weekly, biweekly, and monthly billing schedules.
 - Configure optional minimum payment amounts.
-- Include upcoming obligations in paycheck planning.
+- Include upcoming expenses in paycheck planning.
 
 ### 🎯 Savings & Investment Goals
 
-Turn long-term financial objectives into measurable progress.
+Turn financial objectives into measurable progress.
 
-- Set a personal savings goal.
-- Establish an investment target.
+- Establish a personal savings goal.
+- Set an investment target.
 - Monitor progress using dedicated charts.
-- Include savings and investments in paycheck allocation suggestions.
+- Include savings and investments in suggested paycheck allocations.
 
-### 📈 Credit Score Monitoring
+### 📈 Credit Score Tracking
 
-Keep track of your credit-building journey.
+Monitor your credit-building journey.
 
-- Manually record your credit score.
-- View your recorded score within the application.
+- Manually enter your credit score.
+- View your recorded score on the dashboard.
 - Receive a reminder to update your score after 31 days.
 
 ### 🔒 Privacy-First Design
 
-Your financial information belongs to you.
+Your financial information stays under your control.
 
 - No account registration.
 - No cloud storage.
-- No external server required.
-- No bank account connection.
+- No external servers.
+- No bank account connection required.
 - No subscription required.
-- Financial data remains stored locally on your device.
+- Financial information remains stored locally on your device.
 
 ---
 
 ## 📸 Application Walkthrough
 
-A closer look at the features that make Simple Budget useful for everyday financial management.
+A closer look at the features and functionality of Simple Budget.
 
 <table>
   <tr>
     <td width="50%" align="center">
-      <b>01. Financial Dashboard</b>
+      <b>01. Expenses & Financial Goals</b>
       <br><br>
-      <img src="assets/dashboard.png" alt="Simple Budget Financial Dashboard" width="100%">
+      <img src="assets/expenses-goals.png" alt="Simple Budget Expenses and Financial Goals" width="100%">
       <br><br>
-      Monitor your finances, outstanding debt, and available funds.
+      Manage recurring expenses and track savings and investment goals.
     </td>
     <td width="50%" align="center">
-      <b>02. Paycheck Planning</b>
+      <b>02. Suggested Paycheck Allocation</b>
       <br><br>
-      <img src="assets/paycheck-planning.png" alt="Simple Budget Paycheck Planning" width="100%">
+      <img src="assets/paycheck-allocation.png" alt="Simple Budget Suggested Paycheck Allocation" width="100%">
       <br><br>
-      Review and customize suggested paycheck allocations.
+      Review recommended allocations for bills, debt repayment, savings, and investments.
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
-      <b>03. Debt Management</b>
+      <b>03. Initial Setup: Income & Debts</b>
       <br><br>
-      <img src="assets/debt-management.png" alt="Simple Budget Debt Management" width="100%">
+      <img src="assets/initial-setup-1.png" alt="Simple Budget Initial Setup Income and Debts" width="100%">
       <br><br>
-      Track balances and monitor debt repayment progress.
+      Enter your income, pay schedule, and outstanding debts.
     </td>
     <td width="50%" align="center">
-      <b>04. Savings & Investments</b>
+      <b>04. Initial Setup: Expenses & Goals</b>
       <br><br>
-      <img src="assets/savings-investments.png" alt="Simple Budget Savings and Investments" width="100%">
+      <img src="assets/initial-setup-2.png" alt="Simple Budget Initial Setup Expenses and Goals" width="100%">
       <br><br>
-      Visualize progress toward your personal financial goals.
+      Configure recurring bills, payment schedules, and financial goals.
     </td>
   </tr>
 </table>
 
 ---
 
-## ⚙️ How It Works
+## 💡 How Simple Budget Works
 
 Simple Budget follows a straightforward workflow designed around your personal financial situation.
 
-**Step 1: Set Up Your Budget**
+### 01. Set Up Your Finances
 
-Complete the initial setup by entering your pay schedule, recurring expenses, outstanding debts, and financial goals.
+When you first launch Simple Budget, a guided setup walks you through entering your financial information.
 
-**Step 2: Review Your Dashboard**
+**Income & Debts**
 
-See your financial information organized into one dashboard, including remaining funds, debt balances, and goal progress.
+- Enter how much you earn each pay period.
+- Choose a biweekly or monthly pay schedule.
+- Add outstanding debts, including credit cards, loans, and other balances.
+- Configure recurring minimum debt payments.
 
-**Step 3: Plan Your Paycheck**
+**Expenses & Financial Goals**
 
-When you receive a paycheck, Simple Budget calculates a suggested distribution based on your upcoming bills, minimum payments, and financial priorities.
+- Add recurring bills and expenses.
+- Specify how much each expense costs.
+- Enter payment due dates and frequencies.
+- Establish savings and investment goals.
 
-**Step 4: Customize Your Allocations**
+Once setup is complete, Simple Budget creates your personalized financial dashboard.
 
-Adjust any suggested amount to match your current needs before recording the paycheck.
+### 02. Record Your Paycheck
 
-**Step 5: Track Your Progress**
+When payday arrives, click **"I Got Paid"**.
 
-As you continue using the application, monitor your debt repayment, savings contributions, investment progress, and credit score.
+Enter the amount of your paycheck and record which bills you've paid, including the amount paid toward each obligation.
+
+Simple Budget uses your financial information to help organize your remaining funds.
+
+### 03. Review Suggested Allocations
+
+Based on your income, expenses, outstanding debts, and financial goals, Simple Budget generates a suggested paycheck allocation.
+
+The suggested breakdown prioritizes:
+
+1. Upcoming bills and recurring expenses.
+2. Minimum debt payments.
+3. An everyday spending buffer.
+4. Additional debt repayment.
+5. Savings and investment contributions.
+
+You can adjust the suggested amounts to match your actual financial situation before recording your paycheck.
+
+### 04. Track Your Financial Progress
+
+As you continue recording paychecks and payments, your dashboard helps you monitor:
+
+- **Remaining Funds:** See how much money is available after bills and expenses.
+- **Debt Repayment:** Visualize progress as outstanding balances decrease.
+- **Savings Goals:** Monitor progress toward your savings target.
+- **Investment Goals:** Track contributions toward your investment target.
+- **Credit Score:** Record your credit score and receive a reminder to update it after 31 days.
+
+**Simple Budget helps turn every paycheck into a clear, actionable financial plan.**
 
 ---
 
@@ -201,7 +246,7 @@ Simple Budget operates locally without requiring a backend server, user account,
 
 Simple Budget stores your budget locally using the storage key `budget-app-v1`.
 
-You can manage your financial information directly through the application's **File** menu.
+You can manage your financial information through the application's **File** menu.
 
 | Action | Description |
 |---|---|
@@ -375,7 +420,7 @@ node --test tests/budget.test.js
 
 ## 🏡 Designed for Everyday Financial Management
 
-Simple Budget was created around a simple idea: personal finance software should make managing money easier, not more complicated.
+Simple Budget was created around a simple idea: **personal finance software should make managing money easier, not more complicated.**
 
 Many budgeting tools depend on subscriptions, cloud services, or direct connections to financial institutions.
 
@@ -384,4 +429,14 @@ Simple Budget takes a different approach by providing a focused, locally operate
 Its design emphasizes:
 
 - **Simplicity:** An easy-to-understand interface without unnecessary complexity.
-- **Privacy:** Financial
+- **Privacy:** Financial information remains on your computer.
+- **Flexibility:** Customize paycheck allocations to suit your circumstances.
+- **Financial Awareness:** Understand your obligations before spending.
+- **Goal Tracking:** Make measurable progress toward savings, investments, and debt repayment.
+- **Accessibility:** Use the application on macOS, Windows, or Linux.
+
+---
+
+### 💰 Take control of your money, one paycheck at a time.
+
+*Simple Budget, Version 1.0*

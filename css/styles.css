@@ -204,6 +204,35 @@ input, select {
 
 .top-actions .ghost { height: 40px; }
 
+.file-menu { position: relative; }
+.file-menu summary {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  user-select: none;
+}
+.file-menu summary::-webkit-details-marker { display: none; }
+.file-menu-list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 20;
+  min-width: 180px;
+  padding: 6px;
+  display: grid;
+  gap: 2px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+.file-menu-list button {
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+.file-menu-list button:hover { background: var(--bg); }
+
 .overview {
   display: grid;
   grid-template-columns: minmax(240px, 0.9fr) 1.15fr;

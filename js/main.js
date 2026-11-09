@@ -12,7 +12,7 @@ import {
   setTrackedBalance,
   validateAllocations,
 } from './budget.js'
-import { centsToInput, isPartialMoney, parseMoney, uid } from './format.js'
+import { centsToInput, isPartialMoney, localDateISO, parseMoney, uid } from './format.js'
 import { renderApp } from './render.js'
 import { budgetFile, budgetFromFile, clearBudget, loadBudget, saveBudget } from './storage.js'
 
@@ -116,6 +116,42 @@ function importBudgetText(text) {
 
 window.simpleBudgetExport = exportBudgetText
 window.simpleBudgetImport = importBudgetText
+
+let budgetPicker = null
+
+function backupBudgetFile() {
+  const text = exportBudgetText()
+  if (!text) {
+    alert('There is no budget to back up yet.')
+    return
+  }
+  const blob = new Blob([text], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `Simple Budget ${localDateISO(new Date())}.json`
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
+}
+
+function importBudgetFile() {
+  budgetPicker = document.createElement('input')
+  budgetPicker.type = 'file'
+  budgetPicker.accept = '.json,application/json'
+  budgetPicker.addEventListener('change', () => {
+    const file = budgetPicker.files && budgetPicker.files[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.addEventListener('load', () => {
+      const error = importBudgetText(String(reader.result || ''))
+      if (error) alert(error)
+    })
+    reader.readAsText(file)
+  })
+  budgetPicker.click()
+}
 
 function boot() {
   const loaded = loadBudget()
@@ -245,6 +281,14 @@ function onClick(event) {
   }
   if (action === 'reset') {
     resetBudget()
+    return
+  }
+  if (action === 'backup-budget') {
+    backupBudgetFile()
+    return
+  }
+  if (action === 'import-budget') {
+    importBudgetFile()
     return
   }
   if (action === 'start-pay') {

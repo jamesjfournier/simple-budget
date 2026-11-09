@@ -1,3 +1,6 @@
 .DS_Store
 dist/
 build/
+desktop/assets/
+desktop/icon.ico
+desktop/*.syso

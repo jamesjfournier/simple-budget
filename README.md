@@ -47,3 +47,37 @@ macOS 13 or later, with the Xcode command line tools:
 That writes a universal app (Intel and Apple silicon) to `dist/Simple Budget.app` and a disk image to `dist/Simple Budget 1.0.dmg`. The build is ad-hoc signed. On another Mac, Control-click the app and choose Open the first time.
 
 The app bundle id stays `com.jamesfournier.budget`, so installing a new build over the old one keeps the saved budget.
+
+## Windows
+
+`releases/windows/Simple Budget.exe` is the 64-bit Windows app. Open it and it shows Simple Budget in its own window. Windows 11 already includes the Edge WebView2 Runtime it uses. A current Windows 10 PC usually does too. If the window does not appear, install WebView2 from Microsoft and open the app again:
+
+https://developer.microsoft.com/microsoft-edge/webview2/
+
+Windows may warn that the app is unsigned the first time. Choose More info, then Run anyway.
+
+File, at the top of the window, backs up the budget, imports a backup, or resets it. The budget stays on that computer.
+
+## Linux
+
+Two programs are included:
+
+- `releases/linux/simple-budget-amd64` for 64-bit Intel and AMD PCs
+- `releases/linux/simple-budget-arm64` for 64-bit ARM, including a Raspberry Pi 4 or later
+
+```bash
+chmod +x simple-budget-amd64
+./simple-budget-amd64
+```
+
+With Chrome, Chromium, Edge, or Brave installed, it opens Simple Budget in its own window. Without one of those, it opens your usual browser. File, at the top of the page, backs up the budget, imports a backup, or resets it.
+
+## Build Windows and Linux
+
+Go 1.26 or later:
+
+```bash
+./scripts/build-desktop.sh
+```
+
+That writes `dist/windows/Simple Budget.exe`, `dist/linux/simple-budget-amd64`, and `dist/linux/simple-budget-arm64`. On a Mac it can build all three. The Mac app itself still comes from `./scripts/build-mac-app.sh`.

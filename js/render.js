@@ -105,7 +105,7 @@ function renderEdit(state) {
   return `<div class="wrap">
     <header class="topbar">
       ${brandMark()}
-      <button type="button" class="ghost" data-action="cancel-edit">Cancel</button>
+      ${desktopActions('<button type="button" class="ghost" data-action="cancel-edit">Cancel</button>')}
     </header>
     <section>
       <h2>Pay schedule</h2>
@@ -152,10 +152,8 @@ function renderDashboard(state, today) {
   return `<div class="wrap">
     <header class="topbar">
       ${brandMark()}
-      <div class="top-actions">
-        ${budget.draft ? '' : '<button type="button" class="primary" data-action="start-pay">I got paid</button>'}
-        <button type="button" class="ghost" data-action="edit">Edit</button>
-      </div>
+      ${desktopActions(`${budget.draft ? '' : '<button type="button" class="primary" data-action="start-pay">I got paid</button>'}
+        <button type="button" class="ghost" data-action="edit">Edit</button>`)}
     </header>
     ${overview(state, view, today)}
     ${budget.draft ? paycheckPanel(state, parsed, today) : typicalPlan(budget, today)}
@@ -691,7 +689,25 @@ function moneyField(id, value, bind, dataId = '') {
 }
 
 function brand() {
-  return `<header class="topbar">${brandMark()}</header>`
+  return `<header class="topbar">${brandMark()}${desktopActions('')}</header>`
+}
+
+function desktopActions(inner) {
+  const menu = desktopFileMenu()
+  if (!menu && !inner) return ''
+  return `<div class="top-actions">${menu}${inner}</div>`
+}
+
+function desktopFileMenu() {
+  if (!globalThis.simpleBudgetDesktop) return ''
+  return `<details class="file-menu">
+    <summary class="ghost">File</summary>
+    <div class="file-menu-list">
+      <button type="button" data-action="backup-budget">Backup Budget</button>
+      <button type="button" data-action="import-budget">Import Budget</button>
+      <button type="button" data-action="reset">Reset Budget</button>
+    </div>
+  </details>`
 }
 
 function brandMark() {

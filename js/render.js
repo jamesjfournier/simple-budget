@@ -67,7 +67,7 @@ function stepBody(state) {
   }
   if (state.step === 2) {
     return `<h2>Which debts are you paying off?</h2>
-      <p class="muted">Name each one and enter what you still owe. Add a minimum if you pay one, and choose how often it repeats.</p>
+      <p class="muted">Name each one, mark it as a credit card or a loan, and enter what you still owe. A credit card can take an interest charge from the chart.</p>
       ${debtEditor(form.debts)}
       <button type="button" class="add" data-action="add-debt"><span>+</span> Add a debt</button>`
   }
@@ -169,7 +169,7 @@ function overview(state, view, today) {
       ${billSection(view.expenses, today)}
     </div>
     <div class="overview-side">
-      ${debtSection(view.debts, state.dissolvingIds)}
+      ${debtSection(view.debts, state.dissolvingIds, state)}
       <div class="overview-goals">
         ${goalSection(state, {
           kind: 'savings',
@@ -458,13 +458,15 @@ function duePicker(expense) {
 
 const DEBT_COLORS = ['#2196f3', '#4caf50']
 
-function debtSection(debts, dissolvingIds) {
+function debtSection(debts, dissolvingIds, state) {
   const active = debts.filter((debt) => debt.remaining > 0 || dissolvingIds.includes(debt.id))
   const paidOff = debts.filter((debt) => debt.remaining <= 0 && !dissolvingIds.includes(debt.id))
+  const cards = active.filter((debt) => debt.kind === 'card' && debt.remaining > 0 && !dissolvingIds.includes(debt.id))
   return `<div class="overview-debts">
     <h2>Debts</h2>
     ${active.length ? debtChart(active, dissolvingIds) : '<p class="empty">No debts to pay down.</p>'}
     ${paidOff.length ? `<p class="meta is-paid">${paidOff.map((debt) => `${escapeHtml(debt.name)} cleared`).join(' · ')}</p>` : ''}
+    ${debtUpdate(state, active, cards)}
   </div>`
 }
 
@@ -497,14 +499,17 @@ function debtColumn(debt, dissolving, peak, color, index, count) {
   const nudge = markerNudge(mark, plotBottom)
   const ghost = paid > 0 ? `<div class="debt-ghost${projected > 0 ? '' : ' is-empty'}" style="flex:${paid} 1 0"></div>` : ''
   const solid = projected > 0 ? `<div class="debt-solid" style="flex:${projected} 1 0"></div>` : ''
-  return `<div class="debt-col ${dissolving ? 'is-dissolving' : ''}" style="--bar:${color}">
-    <div class="debt-bar" style="height:${height.toFixed(2)}%" role="img" aria-label="${escapeHtml(debt.name)} started at ${escapeHtml(started)} and is at ${escapeHtml(left)}.">
+  const card = debt.kind === 'card' && remaining > 0 && !dissolving
+  const open = card ? ' type="button" data-action="edit-interest" data-id="' + escapeHtml(debt.id) + '"' : ''
+  const label = `${escapeHtml(debt.name)} started at ${escapeHtml(started)} and is at ${escapeHtml(left)}.`
+  return `<${card ? 'button' : 'div'} class="debt-col${dissolving ? ' is-dissolving' : ''}${card ? ' is-card' : ''}" style="--bar:${color}"${open} aria-label="${label}${card ? ' Add an interest charge.' : ''}">
+    <div class="debt-bar" style="height:${height.toFixed(2)}%">
       <span class="debt-origin">${escapeHtml(started)}</span>
       ${ghost}${solid}
       <span class="debt-now" style="top:${mark.toFixed(2)}%"><i class="debt-now-line"></i></span>
     </div>
     <span class="debt-now-amt align-${align} nudge-${nudge}" style="bottom:${plotBottom.toFixed(2)}%">${escapeHtml(left)}</span>
-  </div>`
+  </${card ? 'button' : 'div'}>`
 }
 
 function markerAlign(index, count, plotBottom) {
@@ -524,8 +529,44 @@ function debtLabel(debt) {
   const minimum = minimumLabel(debt)
   return `<div class="debt-label">
     <h3>${escapeHtml(debt.name)}</h3>
+    ${debt.kind === 'card' ? '<p class="meta">Credit card</p>' : ''}
     ${minimum ? `<p class="meta">${escapeHtml(minimum)}</p>` : ''}
     ${debt.draft ? '<p class="meta">After this check</p>' : ''}
+  </div>`
+}
+
+function debtUpdate(state, debts, cards) {
+  const open = debts.filter((debt) => debt.remaining > 0)
+  if (!open.length) return ''
+  if (state?.editingInterest === 'choose') return interestChooser(cards.length ? cards : open, cards.length > 0)
+  if (state?.editingInterest) return interestPanel(state, open)
+  const only = cards.length === 1 ? cards[0].id : ''
+  return `<button type="button" class="ghost debt-update" data-action="edit-interest" data-id="${escapeHtml(only)}">Update</button>`
+}
+
+function interestChooser(debts, marked) {
+  return `<div class="interest-edit">
+    <p class="tiny">${marked ? 'Which credit card?' : 'Which debt is the credit card?'}</p>
+    <div class="debt-kind">
+      ${debts.map((debt) => `<button type="button" class="choice" data-action="edit-interest" data-id="${escapeHtml(debt.id)}">${escapeHtml(debt.name)}</button>`).join('')}
+    </div>
+    <div class="actions">
+      <button type="button" class="ghost" data-action="cancel-interest">Cancel</button>
+    </div>
+  </div>`
+}
+
+function interestPanel(state, debts) {
+  const debt = debts.find((item) => item.id === state.editingInterest)
+  if (!debt) return ''
+  return `<div class="interest-edit">
+    <label class="tiny" for="interest-${escapeHtml(debt.id)}">Interest on ${escapeHtml(debt.name)}</label>
+    ${moneyField(`interest-${debt.id}`, state.interestDraft, 'interest', debt.id)}
+    ${state.interestError ? `<p class="error" role="alert">${escapeHtml(state.interestError)}</p>` : ''}
+    <div class="actions">
+      <button type="button" class="ghost" data-action="cancel-interest">Cancel</button>
+      <button type="button" class="primary" data-action="save-interest">Add interest</button>
+    </div>
   </div>`
 }
 
@@ -639,8 +680,12 @@ function fundsNote(funds, misc) {
 function debtEditor(debts) {
   return debts.map((debt) => {
     const showDue = String(debt.minimum ?? '').trim() !== '' || Boolean(debt.repeat)
+    const kindChoices = `<div class="debt-kind">
+        <button type="button" class="choice ${debt.kind === 'card' ? 'is-selected' : ''}" data-action="debt-kind" data-id="${debt.id}" data-value="card">Credit Card</button>
+        <button type="button" class="choice ${debt.kind === 'loan' ? 'is-selected' : ''}" data-action="debt-kind" data-id="${debt.id}" data-value="loan">Loan</button>
+      </div>`
     return `<div class="editor">
-      ${debt.settled ? `<p class="label">${escapeHtml(debt.name)}</p><p class="meta is-paid">Paid off</p>` : `<div class="row-2">
+      ${debt.settled ? `<p class="label">${escapeHtml(debt.name)}</p><p class="meta is-paid">Paid off</p>` : `${kindChoices}<div class="row-2">
         <div><label class="tiny" for="debt-name-${debt.id}">Name</label><input id="debt-name-${debt.id}" data-bind="debt-name" data-id="${debt.id}" placeholder="Visa, loan…" value="${escapeHtml(debt.name)}" autocomplete="off" /></div>
         <div><label class="tiny" for="debt-amount-${debt.id}">Still owing</label>${moneyField(`debt-amount-${debt.id}`, debt.amount, 'debt-amount', debt.id)}</div>
       </div>

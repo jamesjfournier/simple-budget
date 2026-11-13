@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   applyCreditScore,
+  addInterest,
   applyForm,
   billPlan,
   buildSuggestions,
@@ -275,7 +276,7 @@ test('blank preset bills are dropped and existing progress is kept on edit', () 
       payFrequency: 'biweekly',
       typicalPay: '1800',
       miscBuffer: '250',
-      debts: [{ id: 'visa', name: 'Visa', amount: '4000' }],
+      debts: [{ id: 'visa', name: 'Visa', amount: '4000', kind: 'loan' }],
       expenses: [
         { id: 'rent', name: 'Rent / Mortgage', amount: '1500', dueDate: '2026-11-01', preset: true },
         { id: 'net', name: 'Internet', amount: '', dueDate: '', preset: true },
@@ -295,7 +296,7 @@ test('blank preset bills are dropped and existing progress is kept on edit', () 
       payFrequency: 'biweekly',
       typicalPay: '1800',
       miscBuffer: '250',
-      debts: [{ id: 'visa', name: 'Visa', amount: '4000' }],
+      debts: [{ id: 'visa', name: 'Visa', amount: '4000', kind: 'loan' }],
       expenses: [
         { id: 'rent', name: 'Rent / Mortgage', amount: '1500', dueDate: '2026-11-01', preset: true },
         { id: 'net', name: 'Internet', amount: '', dueDate: '', preset: true },
@@ -339,7 +340,7 @@ test('moving a paid bill to a later due date starts the next payment', () => {
       payFrequency: 'monthly',
       typicalPay: '3000',
       miscBuffer: '400',
-      debts: [{ id: 'visa', name: 'Visa', amount: '5000' }],
+      debts: [{ id: 'visa', name: 'Visa', amount: '5000', kind: 'loan' }],
       expenses: [{ id: 'rent', name: 'Rent / Mortgage', amount: '1500', dueDate: '2026-12-01', preset: true }],
       savingsGoal: '2000',
     },
@@ -573,6 +574,47 @@ test('an expense minimum is set aside when the full bill is not due yet', () => 
   assert.equal(lines[0].cents, 4000)
 })
 
+test('interest on a credit card raises the balance', () => {
+  const card = { id: 'visa', name: 'Visa', kind: 'card', original: 80000, remaining: 72500, celebrated: [10] }
+  const charged = addInterest(card, 1500)
+  assert.equal(charged.remaining, 74000)
+  assert.equal(charged.original, 80000)
+  assert.deepEqual(charged.celebrated, [10])
+  const grown = addInterest(charged, 10000)
+  assert.equal(grown.remaining, 84000)
+  assert.equal(grown.original, 84000)
+  assert.equal(addInterest({ ...card, kind: 'loan' }, 1500).remaining, 72500)
+  assert.equal(addInterest(card, 0), card)
+
+  const saved = applyForm(
+    {
+      payFrequency: 'monthly',
+      typicalPay: '3000',
+      miscBuffer: '0',
+      debts: [{ id: 'visa', name: 'Visa', amount: '725', kind: 'card' }],
+      expenses: [],
+      savingsGoal: '',
+    },
+    null,
+    oct30,
+  )
+  assert.equal(saved.ok, true)
+  assert.equal(saved.budget.debts[0].kind, 'card')
+  const missing = applyForm(
+    {
+      payFrequency: 'monthly',
+      typicalPay: '3000',
+      miscBuffer: '0',
+      debts: [{ id: 'visa', name: 'Visa', amount: '725' }],
+      expenses: [],
+      savingsGoal: '',
+    },
+    null,
+    oct30,
+  )
+  assert.equal(missing.ok, false)
+})
+
 test('a backup file round-trips and a bad file is refused', () => {
   const starting = budget({ savingsTotal: 33000, investmentGoal: 250000, investmentTotal: 7500 })
   const file = budgetFile(starting, oct30)
@@ -586,6 +628,12 @@ test('a backup file round-trips and a bad file is refused', () => {
   assert.equal(restored.budget.savingsTotal, 33000)
   assert.equal(restored.budget.investmentTotal, 7500)
   assert.equal(restored.budget.debts[0].name, 'Visa')
+  assert.equal(restored.budget.debts[0].kind, 'loan')
+  const legacyCard = budgetFromFile(JSON.stringify(budget({
+    debts: [{ id: 'card', name: 'Credit Card', original: 80000, remaining: 72500, celebrated: [] }],
+  })))
+  assert.equal(legacyCard.ok, true)
+  assert.equal(legacyCard.budget.debts[0].kind, 'card')
   const raw = budgetFromFile(JSON.stringify(starting))
   assert.equal(raw.ok, true)
   assert.equal(raw.budget.payFrequency, 'monthly')

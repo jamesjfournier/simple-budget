@@ -67,12 +67,22 @@ export function percentPaid(debt) {
   return ((debt.original - debt.remaining) / debt.original) * 100
 }
 
+export function addInterest(debt, cents) {
+  if (debt.kind !== 'card' || !Number.isInteger(cents) || cents <= 0) return debt
+  const remaining = debt.remaining + cents
+  return {
+    ...debt,
+    remaining,
+    original: Math.max(debt.original || 0, remaining),
+  }
+}
+
 export function blankForm() {
   return {
     payFrequency: '',
     typicalPay: '',
     miscBuffer: '',
-    debts: [{ id: uid(), name: '', amount: '', minimum: '', repeat: '', dueDate: '' }],
+    debts: [{ id: uid(), name: '', amount: '', kind: '', minimum: '', repeat: '', dueDate: '' }],
     expenses: PRESETS.map((name) => ({
       id: uid(),
       name,
@@ -115,6 +125,7 @@ export function formFromBudget(budget) {
     id: debt.id,
     name: debt.name,
     amount: debt.remaining === 0 ? '0' : centsInput(debt.remaining),
+    kind: debt.kind === 'card' ? 'card' : 'loan',
     minimum: debt.minimum ? centsInput(debt.minimum) : '',
     repeat: normalizeRepeat(debt.repeat, ''),
     dueDate: debt.dueDate || '',
@@ -124,7 +135,7 @@ export function formFromBudget(budget) {
     payFrequency: budget.payFrequency,
     typicalPay: centsInput(budget.typicalPay),
     miscBuffer: centsInput(budget.miscBuffer),
-    debts: debts.length ? debts : [{ id: uid(), name: '', amount: '', minimum: '', repeat: '', dueDate: '' }],
+    debts: debts.length ? debts : [{ id: uid(), name: '', amount: '', kind: '', minimum: '', repeat: '', dueDate: '' }],
     expenses: [...presetRows, ...custom],
     savingsGoal: budget.savingsGoal ? centsInput(budget.savingsGoal) : '',
     investmentGoal: budget.investmentGoal ? centsInput(budget.investmentGoal) : '',
@@ -165,6 +176,8 @@ export function applyForm(form, existing, today) {
     const amountRaw = row.amount.trim()
     if (!name && !amountRaw) continue
     if (!name) return { ok: false, error: 'Name each debt.' }
+    const kind = row.kind === 'card' ? 'card' : row.kind === 'loan' ? 'loan' : ''
+    if (!kind) return { ok: false, error: `Choose Credit Card or Loan for ${name}.` }
     const amount = parseMoney(amountRaw)
     if (amount == null) return { ok: false, error: `Enter how much you still owe on ${name}.` }
     const prev = existing?.debts.find((debt) => debt.id === row.id)
@@ -184,6 +197,7 @@ export function applyForm(form, existing, today) {
       debts.push({
         id: row.id,
         name,
+        kind,
         original: prev.original,
         remaining: 0,
         celebrated: MILESTONES,
@@ -205,6 +219,7 @@ export function applyForm(form, existing, today) {
     debts.push({
       id: row.id,
       name,
+      kind,
       original,
       remaining: amount,
       celebrated: MILESTONES.filter((mark) => pct >= mark),

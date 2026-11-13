@@ -306,6 +306,14 @@ input, select {
   gap: 28px;
 }
 
+.overview-debts { margin-bottom: 36px; }
+
+.debt-update {
+  height: 36px;
+  margin-top: 18px;
+  font-weight: 600;
+}
+
 .funds-figure {
   display: block;
   padding: 0;
@@ -499,6 +507,17 @@ input, select {
   overflow: hidden;
 }
 
+button.debt-col {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+}
+
+button.debt-col.is-card { cursor: pointer; }
+
 .debt-bar {
   position: absolute;
   left: 50%;
@@ -613,6 +632,26 @@ input, select {
   margin-top: 2px;
   font-size: 12px;
 }
+
+.debt-kind {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.debt-kind .choice {
+  text-align: center;
+  margin-top: 0;
+}
+
+.interest-edit {
+  margin-top: 14px;
+  max-width: 280px;
+}
+
+.interest-edit .actions { margin-top: 8px; }
+.interest-edit .primary,
+.interest-edit .ghost { height: 40px; }
 
 .editor { margin-top: 16px; }
 

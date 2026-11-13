@@ -72,9 +72,11 @@ Take the guesswork out of payday.
 Stay organized and work toward becoming debt-free.
 
 - Track multiple debts, including loans and credit cards.
+- Mark each debt as a credit card or a loan.
 - Monitor outstanding balances.
 - Configure optional recurring minimum payments.
 - Visualize repayment progress through dedicated charts.
+- Use Update under the debt chart to add an interest charge to a credit card.
 
 ### 📅 Expense Tracking
 

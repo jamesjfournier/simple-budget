@@ -77,11 +77,18 @@ function normalizeExpense(expense, today) {
   }
 }
 
+function debtKind(debt) {
+  if (debt.kind === 'card' || debt.kind === 'loan') return debt.kind
+  if (/credit\s*card/i.test(debt.name || '')) return 'card'
+  return 'loan'
+}
+
 function normalizeDebt(debt) {
   const minimum = Math.max(0, Number(debt.minimum) || 0)
   return {
     id: debt.id,
     name: debt.name || '',
+    kind: debtKind(debt),
     original: Number(debt.original) || 0,
     remaining: Number(debt.remaining) || 0,
     celebrated: Array.isArray(debt.celebrated) ? debt.celebrated : [],

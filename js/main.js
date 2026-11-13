@@ -1,6 +1,7 @@
 import {
   applyForm,
   blankForm,
+  addInterest,
   buildSuggestions,
   applyCreditScore,
   commitPaycheck,
@@ -39,6 +40,9 @@ const state = {
   editingBalance: null,
   balanceDraft: '',
   balanceError: '',
+  editingInterest: null,
+  interestDraft: '',
+  interestError: '',
 }
 
 app.addEventListener('click', onClick)
@@ -69,6 +73,9 @@ function resetBudget() {
   state.editingBalance = null
   state.balanceDraft = ''
   state.balanceError = ''
+  state.editingInterest = null
+  state.interestDraft = ''
+  state.interestError = ''
   window.scrollTo(0, 0)
   render()
 }
@@ -89,6 +96,9 @@ function clearEditing() {
   state.editingBalance = null
   state.balanceDraft = ''
   state.balanceError = ''
+  state.editingInterest = null
+  state.interestDraft = ''
+  state.interestError = ''
 }
 
 function exportBudgetText() {
@@ -236,7 +246,7 @@ function onClick(event) {
   }
   if (action === 'add-debt') {
     const debtId = uid()
-    state.form = { ...state.form, debts: [...state.form.debts, { id: debtId, name: '', amount: '', minimum: '', repeat: '', dueDate: '' }] }
+    state.form = { ...state.form, debts: [...state.form.debts, { id: debtId, name: '', amount: '', kind: '', minimum: '', repeat: '', dueDate: '' }] }
     state.focusId = `debt-name-${debtId}`
     render()
     return
@@ -375,6 +385,44 @@ function onClick(event) {
     saveBalance()
     return
   }
+  if (action === 'debt-kind') {
+    patchDebt(id, { kind: button.dataset.value === 'card' ? 'card' : 'loan' })
+    return
+  }
+  if (action === 'edit-interest') {
+    const open = state.budget.debts.filter((item) => item.remaining > 0)
+    const cards = open.filter((item) => item.kind === 'card')
+    const picked = open.find((item) => item.id === id)
+    const target = picked && (picked.kind === 'card' || cards.length === 0)
+      ? picked
+      : !id && cards.length === 1
+        ? cards[0]
+        : null
+    if (!target) {
+      state.editingInterest = 'choose'
+      state.interestDraft = ''
+      state.interestError = ''
+      render()
+      return
+    }
+    state.editingInterest = target.id
+    state.interestDraft = ''
+    state.interestError = ''
+    state.focusId = `interest-${target.id}`
+    render()
+    return
+  }
+  if (action === 'cancel-interest') {
+    state.editingInterest = null
+    state.interestDraft = ''
+    state.interestError = ''
+    render()
+    return
+  }
+  if (action === 'save-interest') {
+    saveInterest()
+    return
+  }
   if (action === 'dismiss-toast') {
     state.toasts = state.toasts.filter((toast) => toast.id !== id)
     render()
@@ -395,6 +443,10 @@ function onKeydown(event) {
   if (bind === 'balance') {
     event.preventDefault()
     saveBalance()
+  }
+  if (bind === 'interest') {
+    event.preventDefault()
+    saveInterest()
   }
 }
 
@@ -428,6 +480,28 @@ function saveBalance() {
   state.balanceDraft = ''
   state.balanceError = ''
   showCelebrations(result.celebrations)
+}
+
+function saveInterest() {
+  const debt = state.budget?.debts.find((item) => item.id === state.editingInterest && item.remaining > 0)
+  if (!debt) return
+  const cents = parseMoney(state.interestDraft)
+  if (cents == null || cents <= 0) {
+    state.interestError = 'Enter the interest charge.'
+    state.focusId = `interest-${debt.id}`
+    render()
+    return
+  }
+  const card = debt.kind === 'card' ? debt : { ...debt, kind: 'card' }
+  state.budget = {
+    ...state.budget,
+    debts: state.budget.debts.map((item) => (item.id === debt.id ? addInterest(card, cents) : item)),
+  }
+  saveBudget(state.budget)
+  state.editingInterest = null
+  state.interestDraft = ''
+  state.interestError = ''
+  render()
 }
 
 function saveCredit() {
@@ -543,6 +617,12 @@ function onInput(event) {
     render()
     return
   }
+  if (bind === 'interest') {
+    state.interestDraft = value
+    state.interestError = ''
+    render()
+    return
+  }
   if (bind === 'typicalPay' || bind === 'miscBuffer' || bind === 'savingsGoal' || bind === 'investmentGoal') {
     state.form = { ...state.form, [bind]: value }
     state.error = ''
@@ -654,6 +734,7 @@ function validateStep() {
       const amountRaw = row.amount.trim()
       if (!name && !amountRaw) continue
       if (!name) return 'Name each debt.'
+      if (row.kind !== 'card' && row.kind !== 'loan') return `Choose Credit Card or Loan for ${name}.`
       const amount = parseMoney(amountRaw)
       if (amount == null || amount <= 0) return `Enter how much you still owe on ${name}.`
       const minimumRaw = String(row.minimum ?? '').trim()
